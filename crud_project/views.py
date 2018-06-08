@@ -8,7 +8,7 @@ from crud_project.serializers import PostSerializer, UserSerializer
 
 
 @api_view(['GET', 'POST'])
-@permission_classes((permissions.AllowAny,))
+@permission_classes((permissions.IsAuthenticated,))
 def post_list(request):
     """
     List all code posts, or create a new post.
@@ -27,7 +27,7 @@ def post_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes((permissions.AllowAny,))
+@permission_classes((permissions.IsAuthenticated,))
 def post_detail(request, pk):
     """
     Retrieve, update or delete a post.
