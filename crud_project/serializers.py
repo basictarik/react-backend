@@ -7,7 +7,7 @@ from rest_framework import validators
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('id', 'post_title', 'post_text', 'date_posted')
+        fields = ('id', 'post_title', 'post_text', 'date_posted', 'original_poster')
         read_only_fields = ('date_posted',)
 
 

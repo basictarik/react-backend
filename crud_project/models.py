@@ -11,6 +11,7 @@ class Post(models.Model):
     post_title = models.CharField(max_length=100)
     date_posted = models.DateTimeField(auto_now_add=True, blank=True)
     post_text = NormalTextField(default="Message Deleted")
+    original_poster = models.CharField(max_length=100, default="AnonymousUser")
 
     class Meta:
         ordering = ('date_posted',)
