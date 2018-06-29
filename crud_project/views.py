@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from crud_project.models import Post
 from crud_project.serializers import PostSerializer, UserSerializer
+from crud_project.filters import PostFilter
 
 
 @api_view(['GET', 'POST'])
@@ -16,6 +17,7 @@ def post_list(request):
     if request.method == 'GET':
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
+
         return Response(serializer.data)
 
     elif request.method == 'POST':
