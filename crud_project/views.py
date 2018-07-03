@@ -15,7 +15,10 @@ def post_list(request):
     List all code posts, or create a new post.
     """
     if request.method == 'GET':
+        op = request.GET.get('original_poster')
         posts = Post.objects.all()
+        if op:
+            posts = posts.filter(**{'original_poster': op})
         serializer = PostSerializer(posts, many=True)
 
         return Response(serializer.data)
