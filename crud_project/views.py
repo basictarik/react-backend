@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from crud_project.models import Post
 from crud_project.serializers import PostSerializer, UserSerializer
-from crud_project.filters import PostFilter
+
+
+POSTS_PER_PAGE = 5
 
 
 @api_view(['GET', 'POST'])
@@ -15,13 +17,16 @@ def post_list(request):
     List all code posts, or create a new post.
     """
     if request.method == 'GET':
+        page = int(request.GET.get('page'))
         op = request.GET.get('original_poster')
         posts = Post.objects.all()
         if op:
             posts = posts.filter(**{'original_poster': op})
+        number_of_posts = len(posts)
+        posts = posts[POSTS_PER_PAGE * page - POSTS_PER_PAGE:POSTS_PER_PAGE * page]
         serializer = PostSerializer(posts, many=True)
 
-        return Response(serializer.data)
+        return Response({'allPosts': serializer.data, 'numberOfPosts': number_of_posts})
 
     elif request.method == 'POST':
         serializer = PostSerializer(data=request.data)
