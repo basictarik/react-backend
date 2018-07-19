@@ -57,6 +57,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'restAPI.urls'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'crud_project/media/')
+
+MEDIA_URL = '/media/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -152,6 +156,7 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:8000',
     '192.168.131.72:3000',
     'localhost:3000',
+    '192.168.131.72:8000',
 )
 
 JWT_AUTH = {

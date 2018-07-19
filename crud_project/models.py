@@ -1,5 +1,6 @@
 from django.db import models
-from datetime import datetime
+from django.contrib.auth.models import User
+import os
 
 
 class NormalTextField(models.TextField):
@@ -15,3 +16,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('date_posted',)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100, default='first_name')
+    last_name = models.CharField(max_length=100, default='last_name')

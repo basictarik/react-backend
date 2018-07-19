@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from crud_project.models import Post
-from crud_project.serializers import PostSerializer, UserSerializer
+from crud_project.models import Post, Profile
+from crud_project.serializers import PostSerializer, UserSerializer, ProfileSerializier
 
 
 POSTS_PER_PAGE = 5
@@ -69,13 +69,19 @@ def register_user(request):
     """
     Registering a user
     """
+    print(request)
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
     if request.method == 'POST':
-        new_user = UserSerializer(data=request.data)
+        #new_user = UserSerializer(data=request.data)
+        new_user = ProfileSerializier(data=request.data)
+
         if new_user.is_valid():
             new_user.save()
             return Response(new_user.data, status=status.HTTP_201_CREATED)
         return Response(new_user.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
