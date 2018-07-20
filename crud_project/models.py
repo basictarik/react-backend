@@ -22,3 +22,4 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100, default='first_name')
     last_name = models.CharField(max_length=100, default='last_name')
+    profile_image = models.ImageField(upload_to='images', default='images/no-image.jpg')

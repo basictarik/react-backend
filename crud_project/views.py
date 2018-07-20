@@ -4,7 +4,7 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from crud_project.models import Post, Profile
-from crud_project.serializers import PostSerializer, UserSerializer, ProfileSerializier
+from crud_project.serializers import PostSerializer, UserSerializer, ProfileSerializer
 
 
 POSTS_PER_PAGE = 5
@@ -69,14 +69,12 @@ def register_user(request):
     """
     Registering a user
     """
-    print(request)
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
     if request.method == 'POST':
-        #new_user = UserSerializer(data=request.data)
-        new_user = ProfileSerializier(data=request.data)
+        new_user = ProfileSerializer(data=request.data)
 
         if new_user.is_valid():
             new_user.save()
@@ -84,4 +82,20 @@ def register_user(request):
         return Response(new_user.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+@api_view(['GET', 'PUT'])
+@permission_classes((permissions.IsAuthenticated,))
+def update_user_profile(request, username):
+    print(username)
+    try:
+        user = User.objects.get(username=username)
+        profile = Profile.objects.get(user=user)
+        print(profile)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        print('get')
+        serializer = ProfileSerializer(profile)
+        print(serializer.data)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        print('vamos ala playa')
