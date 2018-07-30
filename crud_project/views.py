@@ -2,9 +2,14 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 from rest_framework.response import Response
+from rest_framework.generics import GenericAPIView, UpdateAPIView
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.views import APIView
+from rest_framework.parsers import FileUploadParser, MultiPartParser
 from django.contrib.auth.models import User
 from crud_project.models import Post, Profile
 from crud_project.serializers import PostSerializer, UserSerializer, ProfileSerializer
+from django.conf import settings
 
 
 POSTS_PER_PAGE = 5
@@ -82,20 +87,48 @@ def register_user(request):
         return Response(new_user.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'POST', 'PATCH'])
 @permission_classes((permissions.IsAuthenticated,))
 def update_user_profile(request, username):
-    print(username)
     try:
         user = User.objects.get(username=username)
         profile = Profile.objects.get(user=user)
-        print(profile)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        print('get')
         serializer = ProfileSerializer(profile)
-        print(serializer.data)
         return Response(serializer.data)
-    elif request.method == 'PUT':
-        print('vamos ala playa')
+
+
+class FileUploadView(APIView):
+    parser_classes = (MultiPartParser, FileUploadParser, )
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, username):
+        up_file = request.data['image']
+        destination = open(settings.MEDIA_ROOT + 'images/' + up_file.name, 'wb+')
+        for chunk in up_file.chunks():
+            destination.write(chunk)
+            destination.close()
+
+        return Response(up_file.name, status.HTTP_201_CREATED)
+
+
+class ProfileUpdateView(UpdateAPIView):
+
+    permission_classes = (permissions.AllowAny,)
+
+    def get_object(self, username):
+        user = User.objects.filter(username=username)
+        profile = Profile.objects.get(user=user[0])
+        return profile
+
+    def patch(self, request, username):
+        profile = self.get_object(username)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

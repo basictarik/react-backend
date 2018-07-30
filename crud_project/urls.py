@@ -7,6 +7,8 @@ urlpatterns = [
     url(r'^posts/(?P<pk>[0-9]+)/$', views.post_detail),
     url(r'signup/$', views.register_user),
     url(r'^profiles/(?P<username>[%&+ \w]+)/$', views.update_user_profile),
+    url(r'^profiles/(?P<username>[%&+ \w]+)/image_upload$', views.FileUploadView.as_view()),
+    url(r'^profiles/(?P<username>[%&+ \w]+)/profile_update$', views.ProfileUpdateView.as_view()),
     url(r'^login/', obtain_jwt_token),
     url(r'^token_renew/', refresh_jwt_token),
 ]

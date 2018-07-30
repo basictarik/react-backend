@@ -31,7 +31,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(required=True)
+    user = UserSerializer(required=False)
+    first_name = serializers.CharField(required=False, max_length=100)
+    last_name = serializers.CharField(required=False, max_length=100)
+    profile_image = serializers.CharField(required=False)
 
     class Meta:
         model = Profile
